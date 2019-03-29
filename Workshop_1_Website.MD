@@ -134,6 +134,9 @@ To upload to GCS you can use the `gcloud` tool or the web interface. `gcloud` is
 7. Make sure you have generated your website files using `hugo` 
 8. Then upload all files in the `bens-blog/public` directory to this bucket
 9. Go back to bucket browser and find the public link to your file. It will be similar to: https://storage.googleapis.com/bens-blog/index.html where `bens-blog` is your bucket name chosen before.
+
+![alt text](media/Workshop1/public_access.png "Forking")
+
 10. Make sure everything is displayed correctly. You may need to change the config.toml file `baseURL` or set your permissions correctly on the bucket.
 
 ```
@@ -170,9 +173,12 @@ Well done, onto our domain setup now!
 Time to make use of that `.me` domain or another domain on namecheap.com. We need to use the Domain Name System (DNS) to point our domain to the endpoint in Google Cloud Platform.
 
 1. Login to [Google Search Console](https://search.google.com/search-console/welcome) with the **same** account you used to Signup for Google Cloud Platform. Here you will need to add your new fancy domain to the console so we can verify our ownership of the domain for GCP.
-2. Enter your domain name you have registered as a property
-3. You will be presented with an option `Verify ownership via DNS record` copy that record so you can add it to namecheap.com DNS settings.
-4. Log into namecheap.com go to `Advanced DNS` set up a new DNS record with the valid `TXT` record with `TTL = 1min` to confirm your ownership of the domain.
+
+![alt text](media/Workshop1/domain_verify.png "Domain Verify")
+
+1. Enter your domain name you have registered as a property
+2. You will be presented with an option `Verify ownership via DNS record` copy that record so you can add it to namecheap.com DNS settings.
+3. Log into namecheap.com go to `Advanced DNS` set up a new DNS record with the valid `TXT` record with `TTL = 1min` to confirm your ownership of the domain.
 
 ```
 NAME        TYPE     DATA
@@ -257,13 +263,16 @@ jobs:
 
 1. Login to circleci.com using github and `Follow` the repository to give CircleCI access to it.
 2. Make sure you are inside the repository 
-2. Run `git status` to see status of files
-3. Run `git add` to add all files that you need
-4. Make sure you commit your changes `git commit -m "Finished dev"`
-5. Push your changes using `git push`
-6. This will push all changes you have commited to github.com
-7. As long as the `.circleci/config.yml` is present then cirlceci.com will pick up the repository and start trying to run the above
-8. Wait for a push, you will see a red failure this means circleci.com is not authorised to access your GCS bucket and upload content
+3. Run `git status` to see status of files
+4. Run `git add` to add all files that you need
+5. Make sure you commit your changes `git commit -m "Finished dev"`
+6. Push your changes using `git push`
+7. This will push all changes you have commited to github.com
+8. As long as the `.circleci/config.yml` is present then cirlceci.com will pick up the repository and start trying to run the above
+9. Wait for a push, you will see a red failure this means circleci.com is not authorised to access your GCS bucket and upload content
+
+
+![alt text](media/Workshop1/ci_build_example.png "Build Status")
 
 ### For further info:  
 We will be authorizing CircleCI access to push code changes to our Google Cloud Platform bucket.
@@ -273,7 +282,10 @@ https://circleci.com/docs/2.0/google-auth/
 1. Make sure you follow this: https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_service_account
 2. Log back into GCP
 3. Go to `Service Accounts` Tab https://console.cloud.google.com/iam-admin/serviceaccounts
-4. `Create a service account`
+4. Create a service account
+
+![alt text](media/Workshop1/service_account.png "Create a service account")
+
 5. Choose a name and description like `circleci` and `allows access to my-bucket`
 6. Select `permissions` as `Storage Object Admin`
 7. Skip user access
@@ -304,6 +316,8 @@ The content will be similar to below:
 GCLOUD_SERVICE_KEY
 GOOGLE_PROJECT_ID
 ```
+
+![alt text](media/Workshop1/env_vars.png "Forking")
 
 1. Once everything has been setup make some changes to your website code
 ```
