@@ -33,10 +33,9 @@ Complete this before the workshop if you can, it will save time! Some of these i
   - [Google Cloud Platform](https://console.cloud.google.com/freetrial)
     - Make sure you enable billing and add your card
   - [GitHub](https://github.com) (Hosting & building your website content)
-  - [CircleCI](https://circlci.com) (Our CI/CD tool that integrates with github.com) make sure you link this to your github.com account
+  - [CircleCI](https://circleci.com) (Our CI/CD tool that integrates with github.com) make sure you link this to your github.com account
 - Download and install:
   - [Hugo](https://gohugo.io/getting-started/installing) a static site generator with markdown templating 
-  - [NodeJS](https://nodejs.org/en/download/) installation
   - [Google Cloud SDK](https://cloud.google.com/sdk/install) To access Google Storage and APIs
   - [Git](https://git-scm.com/downloads) (To manage github.com repositories and track code)
 
