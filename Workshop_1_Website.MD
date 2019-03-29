@@ -317,7 +317,7 @@ GCLOUD_SERVICE_KEY
 GOOGLE_PROJECT_ID
 ```
 
-![alt text](media/Workshop1/env_vars.png "Forking")
+![alt text](media/Workshop1/env_setup.png "Forking")
 
 1. Once everything has been setup make some changes to your website code
 ```
