@@ -28,12 +28,12 @@ Complete this before the workshop if you can, it will save time! Some of these i
 
 - Make sure you have a Credit/Debit Card you can use for Google Cloud sign up
 - Registrations:
-  - [NameCheap](namecheap.com) Domain provider or a free [.me](https://nc.me) domain!
-  - [Cloudflare](cloudflare.com) CDN & Extra DNS provider
+  - [NameCheap](https://namecheap.com) Domain provider or a free [.me](https://nc.me) domain!
+  - [Cloudflare](https://cloudflare.com) CDN & Extra DNS provider
   - [Google Cloud Platform](https://console.cloud.google.com/freetrial)
     - Make sure you enable billing and add your card
-  - [GitHub](github.com) (Hosting & building your website content)
-  - [CircleCI](circlci.com) (Our CI/CD tool that integrates with github.com) make sure you link this to your github.com account
+  - [GitHub](https://github.com) (Hosting & building your website content)
+  - [CircleCI](https://circlci.com) (Our CI/CD tool that integrates with github.com) make sure you link this to your github.com account
 - Download and install:
   - [Hugo](https://gohugo.io/getting-started/installing) a static site generator with markdown templating 
   - [NodeJS](https://nodejs.org/en/download/) installation
