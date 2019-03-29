@@ -21,7 +21,7 @@ You will be generating a static website with `hugo`, a tool written in Go. `hugo
 - Hugo gives us an easy way to write templates in `markdown`, style them, then generate HTML posts/pages from the markdown formatting. Markdown is a plain text authoring syntax to create documents like the current document you are viewing. This file is written in flavour of Markdown for github.com.
 - `hugo` is part of the the JAM stack paradigm which gives us flexibility, open APIs and decoupling between content authoring, styling and deployment.
 
-You will then use your domain name provider (namecheap.com) to point to a cached version of your website on the Cloudflare Content Delivery Network (CDN). This will result in global distribution of your website and improved load times. Your final website will be hosted on Google Cloud Platform, utilising Github with CircleCI for a Continuous Development/Integration process that pushes code through the Google Cloud SDK and uploads the resulting build files to Google Cloud Storage automatically.
+You will then use your domain name provider (namecheap.com) to point to a cached version of your website on the Cloudflare Content Delivery Network (CDN). This will result in global distribution of your website and improved load times. Your final website will be hosted on Google Cloud Platform, utilising Github with CircleCI for a Continuous Deployment/Integration process that pushes code through the Google Cloud SDK and uploads the resulting build files to Google Cloud Storage automatically.
 
 # Prerequisites 
 Complete this before the workshop if you can, it will save time! Some of these instructions may differ depending on operating system.
@@ -128,9 +128,13 @@ To upload to GCS you can use the `gcloud` tool or the web interface. `gcloud` is
 4. Create a new project for example: `bens-blog`
 5. Create a bucket under storage with a name like: `bens-blog`
 6. Select `permissions` and update permissions allowing `allUsers` access. This will allow anyone access to this bucket and give the role `Storage Object Viewer` this means anyone can access the content of the bucket. Be careful what you upload from now on.
-7. Make sure you have generated your website files using `hugo` then upload all files in the `bens-blog/public` directory to this bucket
-8. Go back to bucket browser and find the public link to your file. It will be similar to: https://storage.googleapis.com/bens-blog/index.html where `bens-blog` is your bucket name chosen before.
-9.  Make sure everything is displayed correctly. You may need to change the config.toml file `baseURL` or set your permissions correctly on the bucket.
+
+![alt text](media/Workshop1/add_Users.png "GCP permissions")
+
+7. Make sure you have generated your website files using `hugo` 
+8. Then upload all files in the `bens-blog/public` directory to this bucket
+9. Go back to bucket browser and find the public link to your file. It will be similar to: https://storage.googleapis.com/bens-blog/index.html where `bens-blog` is your bucket name chosen before.
+10. Make sure everything is displayed correctly. You may need to change the config.toml file `baseURL` or set your permissions correctly on the bucket.
 
 ```
 baseUrl = "storage.googleapis.com/bens-blog/"  
@@ -232,11 +236,8 @@ We can make use of Github and TravisCI/CircleCI for our deployment toolkit. We w
 
 ## Using CircleCI for auto deployment
 
-1. Fork this repository or create your own
-2. Make sure you setup a new repo and push your directory to Github.com
-3. Create a `.circleci` folder in the root directory of the repository
-4. Inside this directory create the following content in `config.yaml`
-5. `Follow` the repo on CircleCI
+1. Create a `.circleci` folder in the root directory of the repository
+2. Inside this directory create the following content in a `config.yml` file where `blog-name` is the directory in your repo and `domain.com` is your chosen domain, or the standard bucket if you don't have the domain
 
 ```
 version: 2
@@ -251,19 +252,29 @@ jobs:
       - run: |
           echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
           gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-          gsutil rsync -R ./public gs://domain.com
+          gsutil rsync -R blog-name/public gs://domain.com
 ```
 
-Make sure you change the `domain.com` to you domain or bucket name you are using. Make sure `public` is the dir that `hugo` files are uploaded to.
+1. Login to circleci.com using github and `Follow` the repository to give CircleCI access to it.
+2. Make sure you are inside the repository 
+2. Run `git status` to see status of files
+3. Run `git add` to add all files that you need
+4. Make sure you commit your changes `git commit -m "Finished dev"`
+5. Push your changes using `git push`
+6. This will push all changes you have commited to github.com
+7. As long as the `.circleci/config.yml` is present then cirlceci.com will pick up the repository and start trying to run the above
+8. Wait for a push, you will see a red failure this means circleci.com is not authorised to access your GCS bucket and upload content
 
+### For further info:  
 We will be authorizing CircleCI access to push code changes to our Google Cloud Platform bucket.
 https://circleci.com/docs/2.0/google-auth/
+
 
 1. Make sure you follow this: https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_service_account
 2. Log back into GCP
 3. Go to `Service Accounts` Tab https://console.cloud.google.com/iam-admin/serviceaccounts
 4. `Create a service account`
-5. Choose valid names and description
+5. Choose a name and description like `circleci` and `allows access to my-bucket`
 6. Select `permissions` as `Storage Object Admin`
 7. Skip user access
 8. `Create key` then download the `json` file
@@ -301,11 +312,11 @@ git commit -m "amazing build"
 git push
 ```
 
-8. Now check CircleCI, if everything is setup correctly you should see a nice green tick and succeeded!
-9. If not you can just re-run the `build` in the CircleCI website and check error messages to make sure everything is setup correctly!
-10. Login to GCP and check the content of your bucket has it changed?
-11. Now we need to login to cloudflare.com to carry out cache invalidation and remove our old content from cache
-12. Find the cache invalidation section cloudflare.com try it and check your website has updated
+1. Now check CircleCI, if everything is setup correctly you should see a nice green tick and success!
+2. If not you can just re-run the `build` in the CircleCI website and check error messages to make sure everything is setup correctly!
+3.  Login to GCP and check the content of your bucket has it changed?
+4.  Now we need to login to cloudflare.com to carry out cache invalidation and remove our old content from cache
+5.  Find the cache invalidation section in cloudflare.com and try it, check your website has updated
 
 ## 🔥 Extra:
 - Look into open source CI/CD platforms eg. Travis CI
@@ -314,8 +325,9 @@ git push
 
 ## 📚 Resources
 Docker - docker.com  
-What is CI/CD  
-circleci.com  
+CircleCI vs Travis vs Jenkins  
+Atlassian [CI/CD principles](https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment)
+
 
 # Extensions
 
