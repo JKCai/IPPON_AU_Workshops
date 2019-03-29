@@ -4,33 +4,24 @@
 
 # Introduction
 
-## Why?
-
-This workshop will guide you through a full production Cloud Deployment of your own personal blog including domain registration, configuration, deployment options, HTTPS, performance and standard development practices. The primary focus is not HTML, CSS or JavaScript programming but integrating multiple tools, pipelines and configurations to create a seamless experience.
+This workshop will guide you through a full production Cloud Deployment of your own personal blog including domain registration, configuration, deployment options, HTTPS, performance and standard development practices. The primary focus is not writing HTML, CSS or JavaScript but integrating multiple tools, pipelines and configurations to create a seamless experience. This is applicable not only to website design but many areas.
 
 >There are only two hard things in Computer Science: cache invalidation and naming things.
 >
 >-- Phil Karlton
 
-Maybe we will get a little understanding to what cache invalidation is after we configure our Cloudflare.com CDN!
-
 ## What are we building?
 
 ![alt text](media/Workshop1/website.png "Screenshot of final website")
 
-For this project you will be generating a static website with `hugo` which is a static site generation tool written in Go. Hugo builds are fully extensible or they can be swapped out entirely for another generator or just plain old HTML, CSS and JavaScript.
+### Static website
 
-- Hugo gives us an easy way to write templates in markdown, style them then generate posts/pages via Markdown formatting. Markdown is a plain text authoring syntax to create documents like the current readme you are viewing. This file is written in flavour of Markdown for github.com.
+You will be generating a static website with `hugo`, a tool written in Go. `hugo` sites are fully extensible, they can be swapped out entirely for another generator or just plain old HTML, CSS and JavaScript.
 
-You will then make use of a domain provider namecheap.com to point to a cached version of your website on the Cloudflare Content Delivery Network (This will result in global distribution of your website and great load times!). Your final website will be hosted on Google Cloud Platform, utilising Github with CircleCI for a Continuous Developement/Integration process that pushes code through the Google Cloud SDK and uploads the resulting build files to Google Cloud Storage Bucket automatically.
+- Hugo gives us an easy way to write templates in `markdown`, style them, then generate HTML posts/pages from the markdown formatting. Markdown is a plain text authoring syntax to create documents like the current document you are viewing. This file is written in flavour of Markdown for github.com.
+- `hugo` is part of the the JAM stack paradigm which gives us flexibility, open APIs and decoupling between content authoring, styling and deployment.
 
-- This new paradigm of building static websites with a generator is called a `JAM` Stack and is a relatively new concept. You can read more about
-- The JAM stack gives us flexibility, open APIs and decoupling between content authoring technology and deployment.
-
-## 📚 Resources
-More about the jamstack - https://jamstack.wtf  
-A list of awesome static site generators - https://www.staticgen.com  
-A list of awesome headless content management systems for the jamstack - https://headlesscms.org
+You will then use your domain name provider (namecheap.com) to point to a cached version of your website on the Cloudflare Content Delivery Network (CDN). This will result in global distribution of your website and improved load times. Your final website will be hosted on Google Cloud Platform, utilising Github with CircleCI for a Continuous Development/Integration process that pushes code through the Google Cloud SDK and uploads the resulting build files to Google Cloud Storage automatically.
 
 # Prerequisites 
 Complete this before the workshop if you can, it will save time! Some of these instructions may differ depending on operating system.
@@ -39,24 +30,24 @@ Complete this before the workshop if you can, it will save time! Some of these i
 - Registrations:
   - [NameCheap](namecheap.com) Domain provider or a free [.me](https://nc.me) domain!
   - [Cloudflare](cloudflare.com) CDN & Extra DNS provider
-  - [Google Cloud Platform](https://console.cloud.google.com/freetrial) (Credit/Debit card required)
+  - [Google Cloud Platform](https://console.cloud.google.com/freetrial)
     - Make sure you enable billing and add your card
   - [GitHub](github.com) (Hosting & building your website content)
   - [CircleCI](circlci.com) (Our CI/CD tool that integrates with github.com) make sure you link this to your github.com account
 - Download and install:
   - [Hugo](https://gohugo.io/getting-started/installing) a static site generator with markdown templating 
-  - [NodeJS](https://nodejs.org/en/download/)
-  - [Google Cloud SDK](https://cloud.google.com/sdk/install)
+  - [NodeJS](https://nodejs.org/en/download/) installation
+  - [Google Cloud SDK](https://cloud.google.com/sdk/install) To access Google Storage and APIs
   - [Git](https://git-scm.com/downloads) (To manage github.com repositories and track code)
 
-# Contents
-- [Creating our Website Content](#💻-Creating-our-Website-Content)
-- [Google Cloud Platform - Cloud Hosting Provider](#☁️-Google-Cloud-Platform-Cloud-Hosting-Provider)
-- [Domain Setup and DNS config](#🌎-Domain-Setup-and-DNS-config)
-- [Email Setup](#✉️-Email-Setup)
-- [Cloudflare - Content Delivery Network (CDN)](#⚡-Cloudflare-Content-Delivery-Network-(CDN))
-- [Automatic Deployment Continued](#Automatic-Deployment-Continued)
-- [Extensions](#Extensions)
+# Content
+1. [Creating our Website Content](#💻-Creating-our-Website-Content)
+2. [Google Cloud Platform - Cloud Hosting Provider](#☁️-Google-Cloud-Platform-Cloud-Hosting-Provider)
+3. [Domain Setup and DNS config](#🌎-Domain-Setup-and-DNS-config)
+4. [Email Setup](#✉️-Email-Setup)
+5. [Cloudflare - Content Delivery Network (CDN)](#⚡-Cloudflare-Content-Delivery-Network-(CDN))
+6. [Automatic Deployment Continued](#Automatic-Deployment-Continued)
+7. [Extensions](#Extensions)
 
 # 💻 Creating our Website Content
 
@@ -69,31 +60,55 @@ Complete this before the workshop if you can, it will save time! Some of these i
 ### To host and run a website we have a number of options:
 - Run a server ourselves (A bit vintage but fun!)
 - Upload your website content to another server managed elsewhere
-- Use a fully managed solution such as Wordpress
+- Use a fully managed solution such as Wordpress/Wix
 - Use a static hosting solution (No server side scripting or code!)
 
-This workshop focus is less on programming aspects of website creation but architectural decision making and understanding how to piece everything together! This is applicable not only to website design but many other areas.
-
 ## Getting started
-Based on: https://gohugo.io/getting-started/quick-start/
 
-Once you have the `hugo` static site generator up and running you should run through the quick start.
+1. Login to github.com and `fork` the workshop repository using the button on the right, this will copy the repository into your own github.com account
 
-1. In a new directory create a new hugo website: `hugo new site my-blog` this will create a new directory for your hugo project
+![alt text](media/Workshop1/fork_repo.png "Forking")
+
+2. Now run a `git clone <url>` using the repository you forked in your own github. This will download the repository to the directory you are in.
+
+![alt text](media/Workshop1/clone_with_https.png "Clone")
+
+1. Once cloned `cd` into the repository and run `hugo new site bens-blog` this will create a new directory for your hugo project called `bens-blog`
 2. Find a theme you like! Currently we are using [hugo-theme-even](https://github.com/olOwOlo/hugo-theme-even) if you don't like this you can find another but it may require a different setup!
-3. To add a theme we will be using: `git clone https://github.com/olOwOlo/hugo-theme-even my-blog/themes/even`
-4. Copy over the config from our theme `cp themes/even/exampleSite/config.toml  config.toml`
-5. Create a new blog post page `hugo new post/i_like_static_sites.md`
-6. Edit your post eg `code content/post/i_like_static_sites.md`
-7. Inside your web directory run `hugo server -D` Your server will now be running check it out at: http://localhost:1313
-8. Make some changes to your post and watch the changes (it should have hot reloading!)
-9.  Create a new blog post and pages relevant to your wishes or skip if you wish to get into the nitty gritty deployment
-10. Run `hugo` to build all your assets including files marked as drafts
-11. check the `public` directory to see you all the asset files/folder created from our previous command
-12. Files in `public` are now the self contained build and will be served from Google Cloud Storage in the next steps.
+3. Open your blog directory eg `bens-blog` and open the `themes` dir
+4. To add a theme we will be using: `git clone https://github.com/olOwOlo/hugo-theme-even /even`
+5. Once cloned, copy `even/exampleSite/config.toml` (our site configuration) to the `bens-blog` dir and replace the default `config.toml`
+6. Go back to `bens-blog` and create a new blog post page by running `hugo new post/i_like_static_sites.md`
+7. Edit your post at: `content/post/i_like_static_sites.md` If you don't know markdown look here: https://www.markdownguide.org/basic-syntax/
+
+Add something like the following:
+```
+  1 ---
+  2 title: "I_like"
+  3 date: 2019-03-29T21:50:00+11:00
+  4 draft: true
+  5 ---
+  6
+  7 # Hello welcome to my blog
+  8
+  9 Thanks for joining
+```
+
+1.  Now try and run your web server `hugo server -D` Your server will now be running at: http://localhost:1313
+2.  Don't stop the server and make some changes to your post. You should see it hot reload.
+3.  Create more blog posts and pages relevant to your wishes or skip if you wish to get into the nitty gritty deployment
+4.  Run `hugo` to build all your assets including files marked as drafts
+5.  Check the `bens-blog/public` directory to see you all the asset files/folder created from our previous command
+6.  Files in `public` are now the self contained build and will be served from Google Cloud Storage in the next steps.
+7.  You should also be able to open `bens-blog/public/index.html` and see your website without running a server
 
 **Be careful you may need configure the base url correctly in the `config.toml` file**
-- If you are serving from example.com you will need to add this into the `config.toml` file.
+- If you are serving from example.com you will need to add this into the `config.toml` file under the `baseUrl` setting
+
+## 📚 Resources
+The Jamstack paradigm - https://jamstack.wtf  
+A list of awesome static site generators - https://www.staticgen.com  
+A list of awesome headless content management systems for the jamstack - https://headlesscms.org
 
 # ☁️ Google Cloud Platform - Cloud Hosting Provider
 
@@ -101,60 +116,45 @@ Once you have the `hugo` static site generator up and running you should run thr
 
 ## Basics
 
-There are numerous ways to setup and host our website. For this workshop Google Cloud Platform is an ideal choice due to the ease of use and free credit/trial period provided. **Google Cloud Storage** is Google's offering for "bucket" storage (many cloud offerings have a similar service) this is simply a blob file storage with a number of other features including metadata, permissions and redundancy. 
+There are a number of ways to host our website. For this workshop we will be using Google Cloud Platform due to the ease of use and free credit/trial period provided. `Google Cloud Storage` is Google's offering for "bucket" storage (many Cloud offerings have a similar service) this is blob file storage with a selection of other features including metadata, permissions and redundancy. You can use it to store whatever you want.
   
-To upload to GCS we can use `gcloud` tool or the web interface. `gcloud` is a command line interface allowing us submit a number of powerful commands to GCP and manage infrastructure.
+To upload to GCS you can use the `gcloud` tool or the web interface. `gcloud` is a command line interface allowing us submit a number of powerful commands to the GCP APIs and manage infrastructure.
 
 ## It's GCP time
 
-1. To get started, you should login to the [Google Cloud Console](https://console.cloud.google.com/) with your Google account.
-2. Make sure enable billing and your credit/debit card is added otherwise you can't create a project!
+1. Login to the [Google Cloud Console](https://console.cloud.google.com/) with your Google account
+2. Make sure you have enabled billing and your credit/debit card is added otherwise you can't create a project or use the service
 3. **Optional:** Set billing alerts for something like $10 so you don't waste the credit.
-4. Create a new project for example: `my-new-blog`
-5. Create a bucket under storage with a name like: `blog-website`
-6. Create another bucket under storage with your domain if you have one `example.com`
-7. Select `permissions` and update permissions to public this will allow anyone access to this bucket Add new permission for `allUsers` and give the role `Storage Object Viewer` this means anyone can access the content of the bucket. Be careful what you upload!
-8. Makesure you have generated your website files using `hugo` then ipload all files in `public` directory to this bucket
-9. Go back to bucket browser and find the public link to your file. It will be similar to: https://storage.googleapis.com/bucket-name/index.html where `bucket-name` is your bucket name chosen before.
-10. Make sure everything is displayed correctly. You may need to change the config.toml file `baseURL` or you have incorrectly set your permissions on the bucket.
-
-## Editing our config.toml
-
-To deploy on a domain other than local we need to configure hugo via the `config.toml` file. Update the changes as below:
-
-<details>
-<summary>Solution</summary>
-<p>
+4. Create a new project for example: `bens-blog`
+5. Create a bucket under storage with a name like: `bens-blog`
+6. Select `permissions` and update permissions allowing `allUsers` access. This will allow anyone access to this bucket and give the role `Storage Object Viewer` this means anyone can access the content of the bucket. Be careful what you upload from now on.
+7. Make sure you have generated your website files using `hugo` then upload all files in the `bens-blog/public` directory to this bucket
+8. Go back to bucket browser and find the public link to your file. It will be similar to: https://storage.googleapis.com/bens-blog/index.html where `bens-blog` is your bucket name chosen before.
+9.  Make sure everything is displayed correctly. You may need to change the config.toml file `baseURL` or set your permissions correctly on the bucket.
 
 ```
-baseUrl = "https://<your domain>"  
+baseUrl = "storage.googleapis.com/bens-blog/"  
 title = "Choose an awesome title"
 ```
 
-To submit your static files to GCP
-```
-gcloud /dist <bucket-name>
-
-```
-
-</p>
-</details>
-
 ## Starting to get Automated
 
-To start getting automated we should understand how to automatically build and deploy our website content.
+To start automation we should understand how to automatically build and upload our website content.
 
-1. To get started with automation make sure you have the `GCloud SDK` downloaded
-2. Before running any `gcloud` tools you will need to login to the same Google account that you signed up to GCP with make sure you run: `gcloud auth login` this will open a browser window to login to Google.com
-3. Make some changes to your basic website or add another blog post
-4. Run `hugo` again to build everything into the output file
-5. Once built run the GCloud SDK toolkit and use with your correct `local-dir` and correct `bucket-name` you created before
+1. Make sure you have the `GCloud SDK` downloaded and test using `gcloud help`
+2. Before running any `gcloud` tools you will need to login to the same Google account that you signed up to GCP
+3.  Run: `gcloud auth login` this will open a browser window to login to Google.com
+4. Once logged in make some changes to your basic website or add another blog post like before
+5. Run `hugo` again to build everything into the output directory `public`
+6. Now you can use `gcloud` to upload to our bucket without using the gui. Make sure you `cd` into the `bens-blog` dir and then run the command below with your bucket name you created before.
  ```
- gsutil rsync -R local-dir gs://bucket-name
+ gsutil rsync -R public gs://bucket-name
  ```
-`gsutil` is the Google Storage Utility and allows you to manage GCS this command will do a recursive sync of the local-dir to the GCS bucket.
+`gsutil` is the Google Storage Utility and allows you to manage GCS this command will do a recursive sync of the `public` dir to the GCS bucket and upload all files.
 
-Now navigate to your bucket again, have a look and see if you can access your site. It should be available at: gcs.googleapis.com/my-bucket/index.html
+Now navigate to your bucket again, have a look and see if your files are there, you can access your site. It should be available at: storage.googleapis.com/bucket-name/index.html
+
+Well done, onto our domain setup now!
 
 ## 🔥 Extra:
 - Keep exploring the GCP console
@@ -163,28 +163,30 @@ Now navigate to your bucket again, have a look and see if you can access your si
 
 # 🌎 Domain Setup and DNS config
 
-Time to make use of that `.me` domain or another domain on namecheap.com. To get things up and running we need to use the Domain Name System (DNS) to point our domain to the endpoint in Google Cloud Platform.
+Time to make use of that `.me` domain or another domain on namecheap.com. We need to use the Domain Name System (DNS) to point our domain to the endpoint in Google Cloud Platform.
 
-1. Login to [Google Search Console](https://search.google.com/search-console/welcome) with the **same** account you used to Signup for Google Cloud Platform. Here you will need to add your new fancy domain to the console.
-2. You will be presented with an option `Verify ownership via DNS record` copy that record so you can add it to namecheap.com
-3. Log back into namecheap.com go to `Advanced DNS` set up a new DNS record with the valid `TXT` record with `TTL = 1min` to confirm your ownership of the domain.
+1. Login to [Google Search Console](https://search.google.com/search-console/welcome) with the **same** account you used to Signup for Google Cloud Platform. Here you will need to add your new fancy domain to the console so we can verify our ownership of the domain for GCP.
+2. Enter your domain name you have registered as a property
+3. You will be presented with an option `Verify ownership via DNS record` copy that record so you can add it to namecheap.com DNS settings.
+4. Log into namecheap.com go to `Advanced DNS` set up a new DNS record with the valid `TXT` record with `TTL = 1min` to confirm your ownership of the domain.
 
 ```
 NAME        TYPE     DATA
 @           TXT      google-site-verification=12356abcdef....
 ```
 
-4. Now go back to the search console and try to re-verify your ownership, it may take a little while but should verify!
+You should also add a `CNAME` record which points your domain to Google. If you are wondering what the `@` is it means the root domain will point to Google Storage. If you put `test` it would end up being a subdomain like test.yourdomain.com
+
+```
+NAME        TYPE     DATA
+@           CNAME    c.storage.googleapis.com
+```
+
+4. Now go back to the search console and try to re-verify your ownership, it may take a little while but should verify! This means you can now link your domain with the GCS storage bucket
 5. Log back into Google Cloud Platform and try create a new bucket with the name of your domain eg. `yourdomain.com` if verification was successful you should be able to do this.
-6.  Now you have your domain and bucket setup so you can go back to namecheap.com and put a `CNAME` DNS entry in for `c.storage.googleapis.com` with `TTl=1min` this will point our new domain to GCS on Google.
-
-```
-NAME                  TYPE     DATA
-www       CNAME    c.storage.googleapis.com.
-```
-
-7.  Try it out, you may need to wait a little bit for the DNS settings to propagate again
-8. If you get any errors like below you may have some config issues check your permissions, bucket name etc.
+6.  Try it out, you may need to wait a little bit for the DNS settings to propagate again
+7. If you get any errors like below you may have some config issues check your permissions, bucket name etc.
+8. If all is well your website should now be resolved through yourdomain.com
 
 ```
 <Error>
@@ -310,6 +312,11 @@ git push
 - gitlab.com provides some great features including it's own CI/CD built in
 - Setup your own more complicated CI/CD pipeline in GCP and make use of that credit
 
+## 📚 Resources
+Docker - docker.com  
+What is CI/CD  
+circleci.com  
+
 # Extensions
 
 ## ✉️ Email Setup
@@ -330,12 +337,10 @@ Set something up like the following:
 
 Depending on whether you set a catch-all or not you should be able to send an email to the relevant address: eg. `<anything>@yourdomain.com`
 
-## 🔥 Extra:
+## 🔥 Extensions:
 - Read into DMARC email validation with DNS
 - Setup your own email forwarding/filtering on AWS using SES
 - Setup free sender emailing service so you can send emails from your domain eg. Received from me@awesomedomain.com rather than forwarding to your gmail.com email.
-
-
 - Dynamic content
   - 3rd party (form submissions, comment sections)
   - Serverless functions for dynamically creating pages or sending an email

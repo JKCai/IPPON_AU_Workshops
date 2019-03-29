@@ -1,7 +1,7 @@
 # 🎓 Ippon Australia Tech Workshop Collection
 
 ## What is this?
-Tech workshops to further your understanding of real world software development workflows.
+Tech workshops to further your understanding of real world software development work flow and architecture.
 
 ## Why?
 As a student of Computer Science I was constantly expanding my knowledge in areas including Discrete Math, Algorithms/Data structures, Complexity Theory, Networking protocols and all that other fun stuff! However, there was a lack of teaching real world concepts especially ones related to higher level design, systems integration, testing and how all these amazing pieces of technologies are stitched together to really create something valuable.
